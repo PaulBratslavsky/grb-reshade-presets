@@ -10,6 +10,19 @@ tooling to install them, build new ones, and add custom LUTs.
 
 ---
 
+## 🚀 Quick start (one line)
+Open **PowerShell** and run (edit the path to your game). This downloads the repo, deploys
+the shaders + presets, and — if a `ReShade_Setup*.exe` is in your Downloads — launches the
+ReShade installer pre-filled:
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/PaulBratslavsky/grb-reshade-presets/main/scripts/bootstrap.ps1))) -GamePath "C:\Program Files (x86)\Steam\steamapps\common\Ghost Recon Breakpoint"
+```
+Add `-DefaultPreset "Cinematic_BladeRunner.ini"` to pick the starting look, or
+`-Api dxgi` (default; use DirectX for Breakpoint). Prefer to do it step-by-step or don't
+trust remote scripts? Use the manual setup below.
+
+---
+
 ## ⚠️ Important: use the DirectX renderer, not Vulkan
 Breakpoint can run on **DirectX** (`GRB.exe`) or **Vulkan** (`GRB_vulkan.exe`).
 **ReShade on Vulkan crashes Breakpoint's renderer** (graphics device lost at swapchain
@@ -79,6 +92,22 @@ the shader palette and can generate a new preset from a described look (e.g. "ma
 
 ---
 
+## Claude Code skill (build/tune presets by asking)
+This repo ships a [Claude Code](https://claude.com/claude-code) skill at
+`.claude/skills/grb-reshade/`. It knows the full shader palette, the DirectX-not-Vulkan
+gotcha, the recipes, and the deploy scripts — so you can just say *"make a gritty war-film
+preset"* or *"set up ReShade for this game"* and it does it.
+
+Install it so it's available in every session:
+```powershell
+# copy the skill into your personal Claude skills folder
+Copy-Item .\.claude\skills\grb-reshade -Destination "$env:USERPROFILE\.claude\skills\" -Recurse -Force
+```
+Or keep it project-local — Claude Code auto-loads skills from `.claude/skills/` when you run
+it inside this repo. Then ask it to set things up or build a new look.
+
+---
+
 ## Custom LUTs
 Yes — see [`luts/README.md`](luts/README.md). Generate a neutral LUT, grade it in any image
 editor, drop the PNG in `luts/`, re-run `install.ps1`, and point `LUT.fx` at it.
@@ -107,6 +136,7 @@ for Breakpoint's lighting, so expect to nudge LiftGammaGain/contrast per game.
 ```
 presets/                     the custom preset .ini files
 luts/                        custom LUT PNGs + how-to (LUT.fx)
+scripts/bootstrap.ps1        one-line remote installer (repo + shaders + presets + ReShade)
 scripts/install.ps1          Breakpoint installer (auto-detects game, calls installer below)
 scripts/install-anygame.ps1  portable installer for ANY game (-GamePath ...)
 scripts/deploy-presets.ps1   copy repo presets into the game

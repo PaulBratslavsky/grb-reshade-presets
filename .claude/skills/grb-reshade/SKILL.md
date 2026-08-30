@@ -32,9 +32,19 @@ crashing the game.
 - Log (check for compile errors): `<game>\ReShade.log`
 
 ## Deploy / verify
+- One-line remote setup (any game): `scripts\bootstrap.ps1 -GamePath "..." [-DefaultPreset x.ini] [-Api dxgi]`
+  downloads the repo, deploys shaders+presets, and can launch the ReShade installer pre-filled.
 - Install everything (Breakpoint): `scripts\install.ps1` (auto-detects game).
 - Install into ANY other game: `scripts\install-anygame.ps1 -GamePath "..." [-DefaultPreset x.ini] [-SkipShaders]`.
 - Copy repo presets into game: `scripts\deploy-presets.ps1`.
+
+## Helping a user set up from scratch
+1. Confirm the game + that ReShade is installed for the DirectX exe (not Vulkan for GRB).
+2. Easiest: run `bootstrap.ps1 -GamePath "<game folder>"` (handles repo download, shaders,
+   presets, and the ReShade installer if a setup exe is in Downloads).
+3. Or manual: install ReShade runtime (DirectX) -> `install-anygame.ps1 -GamePath ...`.
+4. Tell them to launch in DirectX mode, press Home, pick a preset. Check `ReShade.log` for
+   `| ERROR |` if anything looks off.
 - After a change, verify no errors: search `ReShade.log` for `| ERROR |`. Unused shaders
   that fail to compile (e.g. `GrainSpread.fx`) are harmless — delete them to clean the log.
   Only shaders referenced by a preset's `Techniques=` line matter.
