@@ -127,6 +127,14 @@ powershell -ExecutionPolicy Bypass -File .\scripts\install-anygame.ps1 -GamePath
 `-SkipShaders` skips the shader download if they're already present. The presets are tuned
 for Breakpoint's lighting, so expect to nudge LiftGammaGain/contrast per game.
 
+**Game-specific auto-detect wrappers** (find the install for you, then call the portable installer):
+```powershell
+.\scripts\install.ps1              # Ghost Recon Breakpoint (DirectX; never Vulkan)
+.\scripts\install-division2.ps1    # Tom Clancy's The Division 2 (DX11/DX12)
+```
+The Division 2 is always-online — ReShade is widely used there for photo mode, but keep it
+purely visual and avoid PvP-advantage tweaks in the Dark Zone.
+
 > ⚠️ **Anti-cheat:** never use ReShade in multiplayer games protected by BattlEye, EAC, VAC,
 > or Vanguard — it can get you banned. Single-player / offline only.
 
@@ -138,6 +146,7 @@ presets/                     the custom preset .ini files
 luts/                        custom LUT PNGs + how-to (LUT.fx)
 scripts/bootstrap.ps1        one-line remote installer (repo + shaders + presets + ReShade)
 scripts/install.ps1          Breakpoint installer (auto-detects game, calls installer below)
+scripts/install-division2.ps1 The Division 2 installer (auto-detects game)
 scripts/install-anygame.ps1  portable installer for ANY game (-GamePath ...)
 scripts/deploy-presets.ps1   copy repo presets into the game
 scripts/new-neutral-lut.ps1  generate a neutral LUT strip to grade
