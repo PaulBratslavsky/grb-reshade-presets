@@ -1,0 +1,14 @@
+# OS / editor junk
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+
+# Downloaded shader libraries / temp (fetched by install.ps1, not committed)
+/tmp/
+*.zip
+
+# ReShade runtime artifacts (should live in the game folder, not the repo)
+ReShade.log
+dxgi.dll
+ReShade*.dll

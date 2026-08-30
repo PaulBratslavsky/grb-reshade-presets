@@ -1,0 +1,102 @@
+# Ghost Recon Breakpoint — ReShade Presets
+
+Custom cinematic ReShade presets for **Tom Clancy's Ghost Recon Breakpoint**, plus the
+tooling to install them, build new ones, and add custom LUTs.
+
+| Preset | Look |
+|--------|------|
+| **Cyberpunk 1980s Neon** | Bright neon — teal/blue shadows, magenta-pink highlights, punchy contrast & saturation, subtle chromatic aberration, light grain. |
+| **Cinematic — Blade Runner** | Teal-and-amber film grade, softer contrast, slightly desaturated base so neon still *pops* via bloom. Anamorphic-style lens flares + 35mm grain. |
+
+---
+
+## ⚠️ Important: use the DirectX renderer, not Vulkan
+Breakpoint can run on **DirectX** (`GRB.exe`) or **Vulkan** (`GRB_vulkan.exe`).
+**ReShade on Vulkan crashes Breakpoint's renderer** (graphics device lost at swapchain
+init — confirmed on AMD + HDR). Always install ReShade for **DirectX** and launch the
+game in **DirectX mode**. The presets are pure color/post shaders and look identical on
+either API, so you lose nothing.
+
+---
+
+## Setup (fresh machine)
+
+### 1. Install the ReShade runtime (one-time, manual)
+1. Download ReShade from <https://reshade.me> and run the installer.
+2. Select the game executable:
+   `...\Ghost Recon Breakpoint\GRB.exe`  ← the **DirectX** exe, not `GRB_vulkan.exe`.
+3. Choose rendering API: **DirectX 10/11/12**.
+4. Skip the preset step; you can skip/untick the effect packages (this repo's installer
+   supplies the shaders). Finish. This drops `dxgi.dll` into the game folder.
+
+### 2. Install shaders + presets (this repo)
+```powershell
+git clone <this-repo> grb-reshade-presets
+cd grb-reshade-presets
+powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1
+```
+The installer will:
+- auto-detect the Breakpoint folder (or pass `-GamePath "..."`),
+- download the required shader libraries (SweetFX + luluco FXShaders),
+- deploy them to `reshade-shaders\`,
+- copy the presets into the game folder,
+- copy any `luts\*.png` into `Textures\`,
+- set the default preset in `ReShade.ini`.
+
+### 3. Play
+- Launch Breakpoint and pick **DirectX 11/12** at the API prompt (not Vulkan).
+- Press **Home** to open the ReShade overlay.
+- Use the **preset dropdown at the top** (with `<` `>` arrows) to switch looks live.
+
+---
+
+## Switching / hot-swapping presets
+ReShade has hot-swapping built in — no extra mod needed:
+- **Home** menu → preset dropdown at the top → pick a preset. Applies instantly.
+- **One-key cycling:** Home → **Settings** tab → set *"Previous preset key"* / *"Next
+  preset key"* (e.g. `PgUp` / `PgDn`). Then tap that key in-game to cycle presets without
+  opening the menu.
+
+Every `.ini` file in the game folder shows up in the dropdown.
+
+---
+
+## Building new presets
+Edit values live in the **Home** menu, then **Save** as a new preset — or author a `.ini`
+by hand (see the two in `presets/`). A preset is just:
+```
+Techniques=Tech1@File1.fx,Tech2@File2.fx,...
+TechniqueSorting=... (same list)
+
+[File1.fx]
+UniformName=value
+```
+Then `powershell -File .\scripts\deploy-presets.ps1` to copy repo presets into the game.
+
+**Or ask Claude Code** — this repo ships a skill (`.claude/skills/grb-reshade/`) that knows
+the shader palette and can generate a new preset from a described look (e.g. "make a warm
+1970s film look" or "cold horror night vibe"). See that skill for the shader reference.
+
+---
+
+## Custom LUTs
+Yes — see [`luts/README.md`](luts/README.md). Generate a neutral LUT, grade it in any image
+editor, drop the PNG in `luts/`, re-run `install.ps1`, and point `LUT.fx` at it.
+
+---
+
+## Repo layout
+```
+presets/                     the custom preset .ini files
+luts/                        custom LUT PNGs + how-to (LUT.fx)
+scripts/install.ps1          full installer (shaders + presets + luts)
+scripts/deploy-presets.ps1   copy repo presets into the game
+scripts/new-neutral-lut.ps1  generate a neutral LUT strip to grade
+.claude/skills/grb-reshade/  Claude Code skill to build more presets
+```
+
+## Credits / licenses
+- Presets and scripts in this repo: MIT (see `LICENSE`).
+- [SweetFX](https://github.com/CeeJayDK/SweetFX) by CeeJay.dk — MIT.
+- [FXShaders](https://github.com/luluco250/FXShaders) by luluco250 — see repo license.
+- Shader libraries are downloaded at install time, not redistributed here.
