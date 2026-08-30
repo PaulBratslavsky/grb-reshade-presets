@@ -32,7 +32,8 @@ crashing the game.
 - Log (check for compile errors): `<game>\ReShade.log`
 
 ## Deploy / verify
-- Install everything: `scripts\install.ps1` (downloads shaders, copies presets+LUTs).
+- Install everything (Breakpoint): `scripts\install.ps1` (auto-detects game).
+- Install into ANY other game: `scripts\install-anygame.ps1 -GamePath "..." [-DefaultPreset x.ini] [-SkipShaders]`.
 - Copy repo presets into game: `scripts\deploy-presets.ps1`.
 - After a change, verify no errors: search `ReShade.log` for `| ERROR |`. Unused shaders
   that fail to compile (e.g. `GrainSpread.fx`) are harmless — delete them to clean the log.

@@ -85,11 +85,30 @@ editor, drop the PNG in `luts/`, re-run `install.ps1`, and point `LUT.fx` at it.
 
 ---
 
+## Use these looks in other games
+The shaders and presets are game-agnostic (pure color/post — no depth-buffer effects), so
+they drop into any game that has ReShade. Use the portable installer:
+```powershell
+# 1. Install the ReShade runtime for the other game's exe (its native API) first.
+# 2. Then deploy shaders + presets into that game folder:
+powershell -ExecutionPolicy Bypass -File .\scripts\install-anygame.ps1 -GamePath "C:\Games\Cyberpunk 2077"
+# optional: set a starting preset
+powershell -ExecutionPolicy Bypass -File .\scripts\install-anygame.ps1 -GamePath "D:\...\RDR2" -DefaultPreset "Cinematic_BladeRunner.ini"
+```
+`-SkipShaders` skips the shader download if they're already present. The presets are tuned
+for Breakpoint's lighting, so expect to nudge LiftGammaGain/contrast per game.
+
+> ⚠️ **Anti-cheat:** never use ReShade in multiplayer games protected by BattlEye, EAC, VAC,
+> or Vanguard — it can get you banned. Single-player / offline only.
+
+---
+
 ## Repo layout
 ```
 presets/                     the custom preset .ini files
 luts/                        custom LUT PNGs + how-to (LUT.fx)
-scripts/install.ps1          full installer (shaders + presets + luts)
+scripts/install.ps1          Breakpoint installer (auto-detects game, calls installer below)
+scripts/install-anygame.ps1  portable installer for ANY game (-GamePath ...)
 scripts/deploy-presets.ps1   copy repo presets into the game
 scripts/new-neutral-lut.ps1  generate a neutral LUT strip to grade
 .claude/skills/grb-reshade/  Claude Code skill to build more presets
